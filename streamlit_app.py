@@ -13,8 +13,17 @@ client = bigquery.Client(credentials=credentials)
 # Constants for pagination
 RESULTS_PER_PAGE = 10
 
-# Function to execute the BigQuery query
+# Function to log and execute the BigQuery query
 def run_query(query, parameters=None):
+    # Log the query and parameters
+    print("Executing query:")
+    print(query)
+    if parameters:
+        print("With parameters:")
+        for param in parameters:
+            print(f"{param.name}: {param.value}")
+
+    # Run the query
     query_job = client.query(query, job_config=bigquery.QueryJobConfig(
         query_parameters=parameters
     ))
@@ -94,6 +103,10 @@ query, parameters = generate_query(search_term, selected_categories, page_number
 # Default view action (load latest data)
 st.write(f"Displaying page {page_number} (10 results per page):")
 try:
+    # Print out the query and parameters before running it
+    run_query(query, parameters)
+    
+    # Execute the query and display the results
     results = run_query(query, parameters)
     
     # Display the results in a table
